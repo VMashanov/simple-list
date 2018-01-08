@@ -16,7 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddRootListItemActivity"></activity>
+        <activity android:name=".AddRootListItemActivity" />
+        <activity android:name=".AddListItemActivity" />
+        <activity android:name=".ListActivity"></activity>
     </application>
 
 </manifest>

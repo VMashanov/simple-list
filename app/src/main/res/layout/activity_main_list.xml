@@ -17,7 +17,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="17dp"
-            android:text="Добавить список"
+            android:text="@string/add_btn"
             tools:layout_editor_absoluteX="6dp"
             tools:layout_editor_absoluteY="462dp" />
 

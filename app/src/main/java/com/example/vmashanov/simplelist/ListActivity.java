@@ -1,48 +1,53 @@
 package com.example.vmashanov.simplelist;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ListView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.content.Intent;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainListActivity extends AppCompatActivity {
+public class ListActivity extends AppCompatActivity {
 
     DBHelper dbHelper;
     private ItemAdapter adapter;
+    private long parentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_list);
+        setContentView(R.layout.activity_list);
+
+        Intent intent = getIntent();
+
+        setParentId(intent.getLongExtra("parentId", 0));
 
         dbHelper = new DBHelper(this);
 
-        ListView root_list_view = findViewById(R.id.RootListView);
+        ListView list_view = findViewById(R.id.ListView);
 
-        setAdapter(new ItemAdapter(this, LoadRootList(dbHelper)));
+        setAdapter(new ItemAdapter(this, LoadList(dbHelper)));
 
-        root_list_view.setAdapter(getAdapter());
+        list_view.setAdapter(getAdapter());
 
-        root_list_view.setOnItemClickListener(selectRootListItem);
+        list_view.setOnItemLongClickListener(selectListItem);
 
-        Button addRootListItemBtn = findViewById(R.id.AddRootListItem);
-        addRootListItemBtn.setOnClickListener(addRootListItemBtnClick);
+        Button addListItemBtn = findViewById(R.id.AddListItem);
+        addListItemBtn.setOnClickListener(addListItemBtnClick);
     }
 
     /**
      * Создает экземпляр класса View.OnClickListener для переопределения обработчика события onClick
      * кнопки "Добавить"
      * */
-    private View.OnClickListener addRootListItemBtnClick = new View.OnClickListener() {
+    private View.OnClickListener addListItemBtnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             NavigateToAddActivity(v);
@@ -53,40 +58,40 @@ public class MainListActivity extends AppCompatActivity {
      * Создает экземпляр класса AdapterView.OnItemClickListener для переопределения обработчика события onItemClick
      * пункта списка
      * */
-    private AdapterView.OnItemClickListener selectRootListItem = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemLongClickListener selectListItem = new AdapterView.OnItemLongClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+        public boolean onItemLongClick(AdapterView<?> parent, View itemClicked, int position, long id) {
             ItemAdapter itemAdapter = getAdapter();
-            long itemId = itemAdapter.getItemId(position);
-            openList(itemId);
+            itemAdapter.remove(position);
+            itemAdapter.notifyDataSetChanged();
+            return true;
         }
     };
 
+
     private void NavigateToAddActivity(View v) {
         switch (v.getId()) {
-            case R.id.AddRootListItem:
-                Intent new_root_item = new Intent(this, AddRootListItemActivity.class);
-                startActivity(new_root_item);
+            case R.id.AddListItem:
+                Intent new_item = new Intent(this, AddListItemActivity.class);
+                new_item.putExtra("parentId", getParentId());
+                startActivity(new_item);
                 break;
             default:
                 break;
         }
     }
 
-    private void openList(long parentId) {
-        Intent list = new Intent(this, ListActivity.class);
-        list.putExtra("parentId", parentId);
-        startActivity(list);
-    }
-
     @Override
     public void onBackPressed() {
-        this.moveTaskToBack(true);
+        super.onBackPressed();
+        Intent intent = new Intent(this, MainListActivity.class);
+        startActivity(intent);
+        finish();
     }
 
-    private List<Item> LoadRootList(DBHelper dbHelper) {
+    private List<Item> LoadList(DBHelper dbHelper) {
         List<Item> rootList = new ArrayList<Item>();
-        String[] selectArg = {""};
+        String[] selectArg = {getParentIdAsString()};
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query(
                 DBHelper.TABLE_NAME,
@@ -131,5 +136,17 @@ public class MainListActivity extends AppCompatActivity {
 
     private ItemAdapter getAdapter() {
         return  adapter;
+    }
+
+    private long getParentId() {
+        return parentId;
+    }
+
+    private String getParentIdAsString() {
+        return Long.toString(parentId);
+    }
+
+    private void setParentId(long parentId) {
+        this.parentId = parentId;
     }
 }
