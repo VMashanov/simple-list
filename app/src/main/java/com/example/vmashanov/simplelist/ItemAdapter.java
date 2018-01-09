@@ -13,10 +13,12 @@ public final class ItemAdapter extends BaseAdapter {
 
     private List<Item> list;
     private LayoutInflater layoutInflater;
+    private boolean isRoot;
 
-    public ItemAdapter(Context context, List<Item> list) {
+    public ItemAdapter(Context context, boolean root, List<Item> list) {
         this.list = list;
-        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.isRoot = root;
     }
 
     @Override
@@ -36,12 +38,34 @@ public final class ItemAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            view = layoutInflater.inflate(R.layout.root_list_item, viewGroup, false);
-        }
+        return  isRoot == true ? rootLayout(i, view, viewGroup) : childrenLayout(i, view, viewGroup);
+    }
+
+    private View rootLayout (int i, View view, ViewGroup viewGroup) {
+        view = viewIsNotPresent(R.layout.root_list_item, view, viewGroup);
 
         TextView titleTextView = view.findViewById(R.id.rootListItemTitle);
         titleTextView.setText(getItemTitle(i));
+
+        return view;
+    }
+
+    private View childrenLayout (int i, View view, ViewGroup viewGroup) {
+        view = viewIsNotPresent(R.layout.list_item, view, viewGroup);
+
+        TextView titleTextView = view.findViewById(R.id.childrenListItemTitle);
+        titleTextView.setText(getItemTitle(i));
+
+        TextView descriptionTextView = view.findViewById(R.id.childrenListItemDescription);
+        descriptionTextView.setText(getItemDescription(i));
+
+        return view;
+    }
+
+    private View viewIsNotPresent(int layout, View view, ViewGroup viewGroup) {
+        if (view == null) {
+            view = layoutInflater.inflate(layout, viewGroup, false);
+        }
 
         return view;
     }

@@ -28,7 +28,7 @@ public class MainListActivity extends AppCompatActivity {
 
         ListView root_list_view = findViewById(R.id.RootListView);
 
-        setAdapter(new ItemAdapter(this, LoadRootList(dbHelper)));
+        setAdapter(new ItemAdapter(this, true, LoadRootList(dbHelper)));
 
         root_list_view.setAdapter(getAdapter());
 

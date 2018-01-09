@@ -33,7 +33,7 @@ public class ListActivity extends AppCompatActivity {
 
         ListView list_view = findViewById(R.id.ListView);
 
-        setAdapter(new ItemAdapter(this, LoadList(dbHelper)));
+        setAdapter(new ItemAdapter(this, false, LoadList(dbHelper)));
 
         list_view.setAdapter(getAdapter());
 
