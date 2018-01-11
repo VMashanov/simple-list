@@ -2,4 +2,6 @@
     <string name="app_name">Мастер списков</string>
     <string name="save_btn_text">Сохранить</string>
     <string name="add_btn">Добавить</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_new_item">Добавить</string>
 </resources>
