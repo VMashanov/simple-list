@@ -5,7 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -24,6 +27,8 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
 
@@ -38,21 +43,28 @@ public class ListActivity extends AppCompatActivity {
         list_view.setAdapter(getAdapter());
 
         list_view.setOnItemLongClickListener(selectListItem);
-
-        Button addListItemBtn = findViewById(R.id.AddListItem);
-        addListItemBtn.setOnClickListener(addListItemBtnClick);
     }
 
-    /**
-     * Создает экземпляр класса View.OnClickListener для переопределения обработчика события onClick
-     * кнопки "Добавить"
-     * */
-    private View.OnClickListener addListItemBtnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            NavigateToAddActivity(v);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_new_item:
+                Intent new_item = new Intent(this, AddListItemActivity.class);
+                new_item.putExtra("parentId", getParentId());
+                startActivity(new_item);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
-    };
+    }
 
     /**
      * Создает экземпляр класса AdapterView.OnItemClickListener для переопределения обработчика события onItemClick
@@ -68,18 +80,6 @@ public class ListActivity extends AppCompatActivity {
         }
     };
 
-
-    private void NavigateToAddActivity(View v) {
-        switch (v.getId()) {
-            case R.id.AddListItem:
-                Intent new_item = new Intent(this, AddListItemActivity.class);
-                new_item.putExtra("parentId", getParentId());
-                startActivity(new_item);
-                break;
-            default:
-                break;
-        }
-    }
 
     @Override
     public void onBackPressed() {
