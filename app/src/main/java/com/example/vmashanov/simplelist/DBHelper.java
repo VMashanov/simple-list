@@ -31,4 +31,17 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists lists");
         onCreate(db);
     }
+
+    public void remove(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+        String[] ids = {Long.toString(id)};
+        db.delete(TABLE_NAME, "_id=?", ids);
+    }
+
+    public void removeWithChildren(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+        String[] ids = {Long.toString(id)};
+        db.delete(TABLE_NAME, "parent=?", ids);
+        db.delete(TABLE_NAME, "_id=?", ids);
+    }
 }

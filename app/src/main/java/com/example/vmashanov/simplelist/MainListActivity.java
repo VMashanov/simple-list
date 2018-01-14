@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -38,6 +39,32 @@ public class MainListActivity extends AppCompatActivity {
         root_list_view.setAdapter(getAdapter());
 
         root_list_view.setOnItemClickListener(selectRootListItem);
+
+        registerForContextMenu(root_list_view);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.RootListView) {
+            menu.add("Удалить");
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                AdapterView.AdapterContextMenuInfo adapterContextMenuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                ItemAdapter itemAdapter = getAdapter();
+                long itemId = itemAdapter.getItemId(adapterContextMenuInfo.position);
+
+                dbHelper.removeWithChildren(itemId);
+                itemAdapter.remove(adapterContextMenuInfo.position);
+                itemAdapter.notifyDataSetChanged();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     @Override

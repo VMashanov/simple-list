@@ -30,8 +30,6 @@ public class AddRootListItemActivity extends AppCompatActivity {
         public void onClick(View v) {
             if (saveListItem()) {
                 backToRootList();
-            } else {
-                Log.d("--- DB INSERTING : ", "error =(");
             }
         }
     };
