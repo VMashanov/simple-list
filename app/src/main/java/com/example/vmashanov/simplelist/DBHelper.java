@@ -1,5 +1,6 @@
 package com.example.vmashanov.simplelist;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -43,5 +44,15 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] ids = {Long.toString(id)};
         db.delete(TABLE_NAME, "parent=?", ids);
         db.delete(TABLE_NAME, "_id=?", ids);
+    }
+
+    public void isDone(long id) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_DONE, true);
+
+        SQLiteDatabase db = getWritableDatabase();
+        String[] ids = {Long.toString(id)};
+
+        db.update(TABLE_NAME, contentValues, "_id=?", ids);
     }
 }

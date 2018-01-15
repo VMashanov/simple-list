@@ -1,6 +1,7 @@
 package com.example.vmashanov.simplelist;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,13 +52,26 @@ public final class ItemAdapter extends BaseAdapter {
     }
 
     private View childrenLayout (int i, View view, ViewGroup viewGroup) {
-        view = viewIsNotPresent(R.layout.list_item, view, viewGroup);
+//        view = viewIsNotPresent(R.layout.list_item, view, viewGroup);
+//
+//        TextView titleTextView = view.findViewById(R.id.childrenListItemTitle);
+//        titleTextView.setText(getItemTitle(i));
+//
+//        TextView descriptionTextView = view.findViewById(R.id.childrenListItemDescription);
+//        descriptionTextView.setText(getItemDescription(i));
+//
+//        return view;
+        view = viewIsNotPresent(R.layout.root_list_item, view, viewGroup);
 
-        TextView titleTextView = view.findViewById(R.id.childrenListItemTitle);
-        titleTextView.setText(getItemTitle(i));
+        TextView titleTextView = view.findViewById(R.id.rootListItemTitle);
 
-        TextView descriptionTextView = view.findViewById(R.id.childrenListItemDescription);
-        descriptionTextView.setText(getItemDescription(i));
+        boolean isDone = getItemIsDone(i);
+
+        if (isDone) {
+            titleTextView.setText(Html.fromHtml("<s>" + getItemTitle(i) + "</s>"));
+        } else {
+            titleTextView.setText(getItemTitle(i));
+        }
 
         return view;
     }
@@ -78,9 +92,10 @@ public final class ItemAdapter extends BaseAdapter {
         return list.get(i).getDescription();
     }
 
-    private boolean getItemIsDone(int i) {
+    public boolean getItemIsDone(int i) {
         return list.get(i).isDone();
     }
+    public void setItemIsDone(int i) { list.get(i).setDone(true); }
 
     public void remove(int i) {
         list.remove(i);

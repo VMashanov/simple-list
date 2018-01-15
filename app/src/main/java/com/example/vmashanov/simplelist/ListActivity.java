@@ -74,8 +74,19 @@ public class ListActivity extends AppCompatActivity {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View itemClicked, int position, long id) {
             ItemAdapter itemAdapter = getAdapter();
-            itemAdapter.remove(position);
+            long itemId = itemAdapter.getItemId(position);
+            boolean itemIsDone = itemAdapter.getItemIsDone(position);
+
+            if (itemIsDone) {
+                dbHelper.remove(itemId);
+                itemAdapter.remove(position);
+            } else {
+                dbHelper.isDone(itemId);
+                itemAdapter.setItemIsDone(position);
+            }
+
             itemAdapter.notifyDataSetChanged();
+
             return true;
         }
     };
